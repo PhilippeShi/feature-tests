@@ -30,7 +30,7 @@ Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
     | id    | title    	        | doneStatus 	| description           |   error                                      |
     | 1     | scan paperwork	| false         |                       |                                              |
     | 2  	| file paperwork 	| false         |                       |                                              |
-    | 3  	| sign paperwork    | true          | signature required    |   Could not find any instances with todos/   |
+    | 5  	|                   |               |                       |   Could not find any instances with todos/   |
 
 Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
     When the user makes a request to delete a duplicate todo instance identified by id "<id>" with fields title "<title>",

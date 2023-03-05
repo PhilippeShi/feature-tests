@@ -12,7 +12,8 @@ Background:
 
 Scenario Outline: Create a new todo instance successfully (Normal Flow)
     When the user makes a request to create a new todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-    Then the “rest api todo list manager” adds the new todo instance to the database
+    Then the “rest api todo list manager” assigns a new id "<id>" to the new todo instance
+    And adds the new todo instance to the database
 
     Examples:
     | id    | title    	        | doneStatus 	| description           |
@@ -22,7 +23,7 @@ Scenario Outline: Create a new todo instance successfully (Normal Flow)
 
 
 Scenario Outline: Create a new todo instance unsuccessfully (Error Flow)
-    When the user makes a request to create a new todo instance with fields id "<id>", doneStatus "<doneStatus>", description "<description>"
+    When the user makes a request to create a new todo instance with fields doneStatus "<doneStatus>", description "<description>"
     and nonexistent field title "<title>"
     Then the “rest api todo list manager” returns an error message "<error>"
 
