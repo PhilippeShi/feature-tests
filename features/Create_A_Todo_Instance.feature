@@ -1,7 +1,7 @@
 Feature: Create a new todo instance
 
 As a user of the “rest api todo list manager”
-I would like to be able to create a new todo instance
+I want to create a new todo instance
 So that the “rest api todo list manager” can add the new todo instance to the already existing list of todo instances
 
 Background:
@@ -12,7 +12,7 @@ Background:
 
 Scenario Outline: Create a new todo instance successfully (Normal Flow)
     When the user makes a request to create a new todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-    Then the “rest api todo list manager” assigns a new id "<id>" to the new todo instance and adds it to the database
+    Then the “rest api todo list manager” adds the new todo instance to the database
 
     Examples:
     | id    | title    	        | doneStatus 	| description           |
@@ -30,11 +30,12 @@ Scenario Outline: Create a new todo instance unsuccessfully (Error Flow)
     | id    | title    	        | doneStatus 	| description           |   error                         |
     | 1     | scan paperwork	| false         |                       |                                 |
     | 2  	| file paperwork 	| false         |                       |                                 |
-    | 3  	|                	| true          | signature required    |   "title : field is mandatory"  |
+    | 3  	|                	| true          | signature required    |   title : field is mandatory    |
 
 Scenario Outline: Create a duplicate todo instance (Alternate Flow)
     When the user makes a request to create a duplicate todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-    Then the “rest api todo list manager” assigns a new id "<id>" to the duplicate todo instance and adds it to the database
+    Then the “rest api todo list manager” assigns a new id "<id>" to the duplicate todo instance
+    And adds the duplicate todo instance to the database
 
     Examples:
     | id    | title    	        | doneStatus 	| description           |
