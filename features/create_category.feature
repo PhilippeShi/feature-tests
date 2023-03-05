@@ -6,13 +6,12 @@ Feature: Create a category
     Background:
         Given the application is running
         And the following categories exist
-            | title  | description          |
-            | work   | work related tasks   |
-            | home   | home related tasks   |
-            | school | school related tasks |
+        | id | title  | description |
+        | 1  | Home   |             |
+        | 2  | Office |             |
         
     Scenario Outline: Create a category (Normal flow)
-        Given A category with "<title>" and "<description>"
+        Given a category with "<title>" and "<description>"
         When I create the category
         Then the category is created
         Examples:
@@ -23,18 +22,18 @@ Feature: Create a category
 
 
     Scenario Outline: Create a category with an existing title (Alternate flow)
-        Given A category with "<title>" and "<description>"
+        Given a category with "<title>" and "<description>"
         When I create the category
         Then the category is created
-        And the new category has a different ID from the existing category
+        And the new category object is different from the existing category
         Examples:
         | title  | description          |
-        | work   | work related tasks   |
-        | home   | home related tasks   |
-        | school | school related tasks |
+        | Home   | Home related tasks   |
+        | Office | Office related tasks |
+      
 
     Scenario Outline: Create a category with missing description (Alternate Flow)
-        Given A category with "<title>" and "<description>"
+        Given a category with "<title>" and "<description>"
         When I create the category
         Then the category is created
         Examples:
@@ -44,7 +43,7 @@ Feature: Create a category
         | title_3  | null       |
 
     Scenario Outline: Create a category with a missing title (Error flow)
-        Given A category with "<title>" and "<description>"
+        Given a category with "<title>" and "<description>"
         When I create the category
         Then the category is not created
         And an error "<message>" is returned
