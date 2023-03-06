@@ -36,7 +36,11 @@ def step_impl(context, title, completed, active, description):
     new_project = {}
     if title != "null": new_project['title'] = title
     if completed != "null": new_project['completed'] = json.loads(completed)
-    if active != "null": new_project['active'] = json.loads(active)
+    if active != "null":
+        try:
+            new_project['active'] = json.loads(active)
+        except json.decoder.JSONDecodeError:
+            new_project['active'] = active
     if description != "null": new_project['description'] = description
     context.new_project = new_project
     print(new_project)

@@ -40,7 +40,7 @@ Feature: Create a new project instance
       | Project no description1 | false     | false  | null        |
       | Project no description2 | true      | false  | null        |
 
-  Scenario Outline: Create a category with a missing title (Alternate flow)
+  Scenario Outline: Create a project with a missing title (Alternate flow)
     Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
     When I create the project
     Then the project is created
@@ -48,10 +48,19 @@ Feature: Create a new project instance
       | title | completed | active | description   |
       | null  | false     | false  | a description |
 
-  Scenario Outline: Create a category with missing completed status (Alternate flow)
-    Given  a project with "<title>" and "<completed>" and "<active>" and "<description>"
+  Scenario Outline: Create a project with missing completed status (Alternate flow)
+    Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
     When I create the project
     Then the project is created
     Examples:
       | title               | completed | active | description |
       | no completed status | null      | false  | no status   |
+
+  Scenario Outline: Create a project with wrong type value in field active
+    Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
+    When I create the project
+    Then the project is not created
+    And an error "<message>" is returned
+    Examples:
+      | title      | completed | active | description   | message                  |
+      | ErrProject | false     | idk    | a description | active should be BOOLEAN |
