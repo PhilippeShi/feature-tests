@@ -1,4 +1,3 @@
-# Created by 29752 at 2023/3/5
 Feature: Get a project instance
   As a user
   I want to get a project

@@ -1,4 +1,3 @@
-# Created by 29752 at 2023/3/5
 Feature: Create a new project instance
 
   As a user of the “rest api todo list manager”

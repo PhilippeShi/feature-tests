@@ -188,3 +188,23 @@ def step_impl(context, title, description):
     print(context.project)
     context.response = response
     context.title=title
+
+
+@given('a project with description "{old_description}" exists')
+def step_impl(context, old_description):
+    response = requests.get(urlProj, data=json.dumps({'description': format(old_description)}))
+
+    if (response.status_code == 404):
+        response = requests.post(urlProj, data=json.dumps({'description': format(old_description)}))
+    context.project_id = response.json().get('projects')[0].get('id')
+    context.project = response.json().get('projects')[0]
+    context.description = response.json().get('projects')[0].get('description')
+    assert response.status_code == 200
+
+
+@when('I update the project with description "{new_description}"')
+def step_impl(context, new_description):
+    context.new_description = new_description
+    response = requests.put(urlProj + '/' + format(context.project_id), data=json.dumps({'description': new_description}))
+    context.response = response
+
