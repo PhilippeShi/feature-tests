@@ -114,12 +114,12 @@ def step_impl(context, title, newTitle, newDoneStatus, newDescription):
    if newTitle != "null":
        newTodo['title'] = newTitle
    if newDoneStatus != "null":
-       newTodo['doneStatus'] = newDoneStatus
+       newTodo['doneStatus'] = json.loads(newDoneStatus)
    if newDescription != "null":
        newTodo['description'] = newDescription
    context.newTodo = newTodo
-   todo_id = requests.get(url+f'todos?title={title}').json()['todos'][0]['id']
-   response = requests.post(url+f'todos/{context.todo_id}', data=json.dumps(context.newTodo))
+   todo_id = requests.get(url+f'?title={title}').json()['todos'][0]['id']
+   response = requests.post(url+f'/{todo_id}', data=json.dumps(newTodo))
    context.response = response
    context.todo_id = todo_id
 
@@ -142,7 +142,7 @@ def step_impl(context):
     'When the user makes a request to update a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 @when('the user makes a request to update a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
-    response = requests.get(url + f'todos/{id}')
+    response = requests.get(url + f'/{id}')
     context.response = response
 
 
@@ -199,3 +199,37 @@ def step_impl(context, new_description):
     response = requests.put(url + '/' + format(context.todo_id), data=json.dumps({'description': new_description}))
     context.response = response
 
+
+@given('a todo with title "{old_title}" exists')
+def step_impl(context, old_title):
+    response = requests.get(url, data=json.dumps({'title': format(old_title)}))
+    if (response.status_code == 404):
+        response = requests.post(url,
+                                 data=json.dumps({'title': format(old_title)}))
+    context.todo_id = response.json().get('todos')[0].get('id')
+    assert response.status_code == 200
+
+
+@when('I update the todo with "{new_title}"')
+def step_impl(context, new_title):
+    context.new_title = new_title
+    response = requests.put(url + '/' + format(context.todo_id),
+                            data=json.dumps({'title': new_title}))
+    context.response = response
+
+
+@then("the todo is updated")
+def step_impl(context):
+    assert context.response.status_code == 200
+    assert context.response.json().get("id") is not None
+    if "new_title" in context:
+        assert context.response.json().get("title") == context.new_title
+    if "new_description" in context:
+        assert context.response.json().get("description") == context.new_description
+
+
+@given('a todo with "{id}" not exist')
+def step_impl(context, id):
+    response = requests.get(url + f'/{id}')
+    assert response.status_code == 404
+    context.todo_id=id
