@@ -29,7 +29,7 @@ Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
 
     Examples:
     | id    | title    	        | doneStatus 	| description           |   error                                      |
-    | 5  	|                   |               |                       |   Could not find any instances with todos/   |
+    | 5  	|                   |               |                       |   Could not find any instances with todos/5  |
 
 Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
     When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>",
