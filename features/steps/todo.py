@@ -40,7 +40,7 @@ def step_impl(context, title, doneStatus, description):
     context.response = response
 
 
-@then('the “rest api todo list manager” adds the new todo instance to the database')
+@then('the “rest api todo list manager” adds the todo instance to the database')
 def step_impl(context):
     context.newTodo['id'] = context.response.json().get("id")
     assert context.response.status_code == 201
@@ -54,11 +54,6 @@ def step_impl(context):
 
 @then('the “rest api todo list manager” returns an error message "{error}"')
 def step_impl(context, error):
-#     response = requests.get(url+f'todos?doneStatus={context.newTodo["doneStatus"]}&description={context.newTodo["description"]}')
-#     todos = response.json().get("todos")
-#     assert context.response.status_code == 400
-#     assert context.response.json().get("id") is None
-#     assert len(todos) == 0
     error = context.response.json().get("errorMessages")
     assert len(error) == 1
     assert message in error[0]
@@ -86,6 +81,11 @@ def step_impl(context):
     assert context.response.status_code == 200
 
 
+@when('When the user makes a request to delete a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+def step_impl(context, id, title, doneStatus, description):
+    response = requests.get(url+f'todos/{id}')
+    context.response = response
+
 @when('the user makes a request to get a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
    response = requests.get(url+f'todos?title={title}&doneStatus={doneStatus}&description={description}')
@@ -104,6 +104,7 @@ def step_impl(context):
     laa = context.todo_id
     context.todo_id = laa
     assert response.status_code == 200
+    assert context.response.status_code == 200
     assert response.json().get("errorMessages") is not None
 
 @when('the user makes a request to update a todo instance titled "{title}" with fields title "{newTitle}", doneStatus "{newDoneStatus}", and description "{newDescription}"')
@@ -120,6 +121,7 @@ def step_impl(context, title, newTitle, newDoneStatus, newDescription):
    response = requests.post(url+f'todos/{context.todo_id}', data=json.dumps(context.newTodo))
    context.response = response
    context.todo_id = todo_id
+
 
 @then('the “rest api todo list manager” updates the todo instance from the database')
 def step_impl(context):

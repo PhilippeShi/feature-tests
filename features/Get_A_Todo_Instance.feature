@@ -35,5 +35,5 @@ Scenario Outline: Get a duplicate todo instance (Alternate Flow)
     Then the “rest api todo list manager” returns a todo instance from the database
 
     Examples:
-    | id    | title    	        | doneStatus 	| description           |
-    | 2  	| file paperwork 	| false         |                       |
+    | title    	        | doneStatus 	| description           |
+    | file paperwork 	| false         |                       |
