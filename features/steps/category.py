@@ -116,6 +116,8 @@ def step_impl(context, title, description):
         assert response.status_code == 201
     else:
         context.category_id = response.json()['categories'][0]['id']
+        context.title = title
+        context.description = description
         assert response.status_code == 200
 
 @given('the category is assigned to the todo')
@@ -169,4 +171,29 @@ def step_impl(context):
 @given('a category with "{id}" does not exist')
 def step_impl(context, id):
     context.category_id = id
+
+@when('I update the category with "{new_title}"')
+def step_impl(context, new_title):
+    data = {'title': new_title}
+    context.new_title = new_title
+    category_id = requests.get(url+f'categories?title={context.title}').json()['categories'][0]['id']
+    response = requests.put(url+f'categories/{category_id}', data=json.dumps(data))
+    context.response = response
+    context.category_id = category_id
+
+@then('the category is updated')
+def step_impl(context):
+    assert context.response.status_code == 200
+    assert context.response.json().get("id") is not None
+    assert context.response.json().get("title") == context.new_title
+    if "new_description" in context:
+        assert context.response.json().get("description") == context.new_description
+
+@when('I update the category with both "{new_title}" and "{new_description}"')
+def step_impl(context, new_title, new_description):
+    data = {'title': new_title, 'description': new_description}
+    context.new_title = new_title
+    context.new_description = new_description
+    response = requests.put(url+f'categories/{context.category_id}', data=json.dumps(data))
+    context.response = response
 
