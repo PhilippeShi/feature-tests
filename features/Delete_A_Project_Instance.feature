@@ -12,8 +12,7 @@ Background:
 
 
 Scenario Outline: Delete a project instance successfully (Normal Flow)
-    When the user makes a request to delete a project instance identified by id "<id>" with fields title "<title>",
-    completed status "<completed>", active status "<active>" and description "<description>"
+    When the user makes a request to delete a project instance identified by id "<id>" with fields title "<title>", completed status "<completed>", active status "<active>" and description "<description>"
     Then the “rest api todo list manager” deletes the project instance from the database
 
     Examples:
@@ -21,8 +20,7 @@ Scenario Outline: Delete a project instance successfully (Normal Flow)
     | 2     | Office Work       | false         | true      |                   |
 
 Scenario Outline: Delete a project instance unsuccessfully (Error Flow)
-    When the user makes a request to delete a project instance identified by id "<id>" with fields title "<title>",
-    completed status "<completed>", active status "<active>" and description "<description>" that does not exist in the database
+    When the user makes a request to delete a project instance identified by id "<id>" with fields title "<title>", completed status "<completed>", active status "<active>" and description "<description>" that does not exist in the database
     Then the “rest api todo list manager” returns an error message "<error>"
 
     Examples:
@@ -32,8 +30,7 @@ Scenario Outline: Delete a project instance unsuccessfully (Error Flow)
     | 5  	|                   |               |           |                   |  Could not find any instances with projects/ |
 
 Scenario Outline: Delete a duplicate project instance (Alternate Flow)
-    When the user makes a request to delete a duplicate project instance identified by id "<id>" with fields title "<title>",
-    completed status "<completed>", active status "<active>" and description "<description>"
+    When the user makes a request to delete a duplicate project instance identified by id "<id>" with fields title "<title>", completed status "<completed>", active status "<active>" and description "<description>"
     Then the “rest api todo list manager” deletes the duplicate project instance identified by id "<id>"
 
     Examples:
