@@ -6,13 +6,14 @@ So that the “rest api todo list manager” can update the todo instance from t
 
 Background:
     Given the following todo instances exist in the database
-        | id    | title    	        | doneStatus 	| description    |
-        | 1     | scan paperwork	| false         | null           |
-        | 2  	| file paperwork 	| false         | null           |
-        | 3  	| file paperwork 	| false         | null           |
+        | title          | doneStatus | description |
+        | scan paperwork | false      | null        |
+        | file paperwork | false      | null        |
+        | file paperwork | false      | null        |
 
 
 Scenario Outline: Update a todo instance successfully (Normal Flow)
+
     When the user makes a request to update a todo instance titled "<title>" with fields title "<newTitle>", doneStatus "<newDoneStatus>", and description "<newDescription>"
     Then the “rest api todo list manager” updates the todo instance from the database
 
@@ -23,11 +24,11 @@ Scenario Outline: Update a todo instance successfully (Normal Flow)
 
 Scenario Outline: Update a todo instance unsuccessfully (Error Flow)
     When the user makes a request to update a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-    Then the “rest api todo list manager” returns an error message "<error>"
+    Then an error "<error>" is returned
 
     Examples:
     | id    | title    	        | doneStatus 	| description           |   error                                                  |
-    | 8  	| send paperwork    | false         | send to government    |   No such todo entity instance with GUID or ID 8 found   |
+    | 8  	| send paperwork    | false         | send to government    |   Could not find an instance with todos/8   |
 
 Scenario Outline: Update a duplicate todo instance (Alternate Flow)
     When the user makes a request to update a todo instance titled "<title>" with fields title "<newTitle>", doneStatus "<newDoneStatus>", and description "<newDescription>"
