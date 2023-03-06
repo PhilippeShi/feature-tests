@@ -114,12 +114,12 @@ def step_impl(context, title, newTitle, newDoneStatus, newDescription):
    if newTitle != "null":
        newTodo['title'] = newTitle
    if newDoneStatus != "null":
-       newTodo['doneStatus'] = newDoneStatus
+       newTodo['doneStatus'] = json.loads(newDoneStatus)
    if newDescription != "null":
        newTodo['description'] = newDescription
    context.newTodo = newTodo
-   todo_id = requests.get(url+f'todos?title={title}').json()['todos'][0]['id']
-   response = requests.post(url+f'todos/{context.todo_id}', data=json.dumps(context.newTodo))
+   todo_id = requests.get(url+f'?title={title}').json()['todos'][0]['id']
+   response = requests.post(url+f'/{todo_id}', data=json.dumps(newTodo))
    context.response = response
    context.todo_id = todo_id
 
@@ -142,7 +142,7 @@ def step_impl(context):
     'When the user makes a request to update a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 @when('the user makes a request to update a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
-    response = requests.get(url + f'todos/{id}')
+    response = requests.get(url + f'/{id}')
     context.response = response
 
 

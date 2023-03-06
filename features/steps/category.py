@@ -68,7 +68,6 @@ def step_impl(context):
 @then('an error "{message}" is returned')
 def step_impl(context, message):
     error = context.response.json().get("errorMessages")
-    print(error)
     assert len(error) == 1
     assert message in error[0]
 
