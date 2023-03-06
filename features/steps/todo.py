@@ -18,11 +18,11 @@ def step_impl(context):
         titles = [todo['title'] for todo in todos]
         dones=[todo['doneStatus'] for todo in todos]
         dess=[todo['description'] for todo in todos]
-        # assert context.table[0]['id'] in ids
-        # assert context.table[0]['title'] in titles
-        #
-        # assert context.table[1]['id'] in ids
-        # assert context.table[1]['title'] in titles
+        assert context.table[0]['id'] in ids
+        assert context.table[0]['title'] in titles
+
+        assert context.table[1]['id'] in ids
+        assert context.table[1]['title'] in titles
     else:
         for row in context.table:
             if row['title'] not in [todo['title'] for todo in todos]:
