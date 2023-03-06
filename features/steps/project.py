@@ -26,8 +26,8 @@ def step_impl(context):
     else:
         for row in context.table:
             if row['title'] not in [project['title'] for project in projects]:
-                data = {'title': row['title'], 'completed': row['completed'],
-                        'active': row['active'], 'description': row['description']}
+                data = {'title': row['title'], 'completed': json.loads(row['completed']),
+                        'active': json.loads(row['active']), 'description': row['description']}
                 res = requests.post(urlProj, data=json.dumps(data))
 
 
@@ -36,10 +36,13 @@ def step_impl(context, title, completed, active, description):
     new_project = {}
     if title != "null": new_project['title'] = title
     if completed != "null": new_project['completed'] = json.loads(completed)
-    if active != "null": new_project['active'] = json.loads(active)
+    if active != "null":
+        try:
+            new_project['active'] = json.loads(active)
+        except json.decoder.JSONDecodeError:
+            new_project['active'] = active
     if description != "null": new_project['description'] = description
     context.new_project = new_project
-    print(new_project)
 
 @when("I create the project")
 def step_impl(context):
@@ -81,4 +84,127 @@ def step_impl(context):
     assert context.response.json().get("id") is None
     assert len(projects) == 0
 
+
+@given('a project with "{title}" exists')
+def step_impl(context, title):
+    response=requests.get(urlProj, data=json.dumps({'title': format(title)}))
+
+
+    if(response.status_code==404):
+        response=requests.post(urlProj, data=json.dumps({'title': format(title)}))
+    context.project_id = response.json().get('projects')[0].get('id')
+    context.project=response.json().get('projects')[0]
+    context.title=response.json().get('projects')[0].get('title')
+    assert response.status_code==200
+
+
+@when("I delete the project")
+def step_impl(context):
+    response=requests.delete(urlProj+'/'+format(context.project_id))
+    context.response=response
+
+@then("the project is deleted")
+def step_impl(context):
+    response=requests.get(urlProj+'/'+format(context.project_id))
+    assert response.status_code==404
+    assert response.json().get("errorMessages") is not None
+
+
+@given('a project with "{id}" not exist')
+def step_impl(context, id):
+    response = requests.get(urlProj + '/' + format(id))
+    context.new_project = response.json()
+    context.project_id = id
+    assert response.status_code == 404
+
+
+@when("I get the project by title")
+def step_impl(context):
+    response=requests.get(urlProj, data=json.dumps({'title': context.project.get('title')}))
+    context.status_code=response.status_code
+    context.project=response.json().get('projects')[0]
+    context.response=response
+
+
+@then("the response returns the project object")
+def step_impl(context):
+    assert context.project.get('title')== context.title
+
+
+@when("I get the project by id")
+def step_impl(context):
+    response=requests.get(urlProj+'/'+format(context.project_id))
+    context.response=response
+
+
+@when('I update the project with "{new_title}"')
+def step_impl(context, new_title):
+    context.new_title=new_title
+    response=requests.put(urlProj+'/'+format(context.project_id), data=json.dumps({'title':new_title}))
+    context.response=response
+
+@then("the project is updated")
+def step_impl(context):
+    assert context.response.status_code==200
+    assert context.response.json().get('id') is not None
+    if "new_title" in context:
+        assert context.response.json().get("title")==context.new_title
+    if "new_description" in context:
+        assert context.response.json().get("description")==context.new_description
+
+
+@given('a project with "{old_title}" and "{old_description}" exist')
+def step_impl(context, old_title, old_description):
+    response = requests.get(urlProj, data=json.dumps({'title': format(old_title), 'description':format(old_description)}))
+
+    if (response.status_code == 404):
+        response = requests.post(urlProj, data=json.dumps({'title': format(old_title),'description':format(old_description)}))
+    context.project_id = response.json().get('projects')[0].get('id')
+    assert response.status_code == 200
+
+
+@when('I update the project with "{new_title}" and "{new_description}" together')
+def step_impl(context, new_title, new_description):
+    context.new_title, context.new_description= new_title, new_description
+    response = requests.put(urlProj + '/' + format(context.project_id), data=json.dumps({'title': new_title, 'description':new_description}))
+    context.response = response
+
+
+@then("the project is not updated")
+def step_impl(context):
+    assert context.response.status_code == 404
+
+    if "new_title" in context:
+        assert context.response.json().get("title") == context.new_title
+    if "new_description" in context:
+        assert context.response.json().get("description") == context.new_description
+
+
+@when('I get the project by "{title}" and "{description}"')
+def step_impl(context, title, description):
+    response = requests.get(urlProj, data=json.dumps({'title': format(title), 'description':format(description)}))
+    context.status_code = response.status_code
+    context.project = response.json().get('projects')[0]
+    print(context.project)
+    context.response = response
+    context.title=title
+
+
+@given('a project with description "{old_description}" exists')
+def step_impl(context, old_description):
+    response = requests.get(urlProj, data=json.dumps({'description': format(old_description)}))
+
+    if (response.status_code == 404):
+        response = requests.post(urlProj, data=json.dumps({'description': format(old_description)}))
+    context.project_id = response.json().get('projects')[0].get('id')
+    context.project = response.json().get('projects')[0]
+    context.description = response.json().get('projects')[0].get('description')
+    assert response.status_code == 200
+
+
+@when('I update the project with description "{new_description}"')
+def step_impl(context, new_description):
+    context.new_description = new_description
+    response = requests.put(urlProj + '/' + format(context.project_id), data=json.dumps({'description': new_description}))
+    context.response = response
 
