@@ -3,16 +3,13 @@ import requests
 import json
 import subprocess
 
-url = 'http://localhost:4567/'
+url = 'http://localhost:4567/todos'
 
 @given('the following todo instances exist in the database')
 def step_impl(context):
-    res = requests.get(url+'todos')
-    assert res.status_code == 200
-    response = requests.get(url+'todos')
+    response = requests.get(url)
     request_data = response.json()
     todos = request_data["todos"]
-    # for row in context.table:
     if context.table[0].get('id') is not None:
         ids = [todo['id'] for todo in todos]
         titles = [todo['title'] for todo in todos]
@@ -32,8 +29,7 @@ def step_impl(context):
 @when('the user makes a request to create a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
     newTodo = {}
-    if title != "null":
-        newTodo['title'] = title
+    if title != "null": newTodo['title'] = title
     if doneStatus != "null":
         newTodo['doneStatus'] = json.loads(doneStatus)
     if description != "null":
@@ -85,7 +81,7 @@ def step_impl(context):
     assert context.response.status_code == 200
 
 
-@when('When the user makes a request to delete a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+@when('the user makes a request to delete a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
     response = requests.get(url+f'todos/{id}')
     context.response = response
@@ -111,14 +107,15 @@ def step_impl(context):
     assert context.response.status_code == 200
     assert response.json().get("errorMessages") is not None
 
+
 @when('the user makes a request to update a todo instance titled "{title}" with fields title "{newTitle}", doneStatus "{newDoneStatus}", and description "{newDescription}"')
 def step_impl(context, title, newTitle, newDoneStatus, newDescription):
    newTodo = {}
-   if title != "null":
+   if newTitle != "null":
        newTodo['title'] = newTitle
-   if doneStatus != "null":
+   if newDoneStatus != "null":
        newTodo['doneStatus'] = newDoneStatus
-   if description != "null":
+   if newDescription != "null":
        newTodo['description'] = newDescription
    context.newTodo = newTodo
    todo_id = requests.get(url+f'todos?title={title}').json()['todos'][0]['id']
@@ -141,7 +138,7 @@ def step_impl(context):
         assert context.response.json().get("description") == context.newDescription
 
 
-@when('When the user makes a request to update a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+@when('the user makes a request to update a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
     response = requests.get(url+f'todos/{id}')
     context.response = response

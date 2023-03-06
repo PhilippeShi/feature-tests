@@ -5,11 +5,11 @@ I want to update a todo instance
 So that the “rest api todo list manager” can update the todo instance from the already existing list of todo instances
 
 Background:
-    Given the following todo instances exist in the database:
+    Given the following todo instances exist in the database
         | id    | title    	        | doneStatus 	| description    |
-        | 1     | scan paperwork	| false         |                |
-        | 2  	| file paperwork 	| false         |                |
-        | 3  	| file paperwork 	| false         |                |
+        | 1     | scan paperwork	| false         | null           |
+        | 2  	| file paperwork 	| false         | null           |
+        | 3  	| file paperwork 	| false         | null           |
 
 
 Scenario Outline: Update a todo instance successfully (Normal Flow)
@@ -18,7 +18,7 @@ Scenario Outline: Update a todo instance successfully (Normal Flow)
 
     Examples:
     | title    	        | newTitle        | doneStatus 	|   newDoneStatus  |  description  |   newDescription     |
-    | scan paperwork	| sign paperwork  | false       |   true           |               |   not signed yet     |
+    | scan paperwork	| sign paperwork  | false       |   true           |  null         |   not signed yet     |
 
 
 Scenario Outline: Update a todo instance unsuccessfully (Error Flow)
@@ -35,9 +35,6 @@ Scenario Outline: Update a duplicate todo instance (Alternate Flow)
 
     Examples:
     | title    	        | newTitle        | doneStatus 	|   newDoneStatus  |  description  |   newDescription     |
-    | file paperwork	| do paperwork    | false       |   false          |               |   not done yet       |
+    | file paperwork	| do paperwork    | false       |   false          |  null         |   not done yet       |
 
 
-
-
-e
