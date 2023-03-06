@@ -5,6 +5,7 @@ import subprocess
 
 url = 'http://localhost:4567/todos'
 
+
 @given('the following todo instances exist in the database')
 def step_impl(context):
     response = requests.get(url)
@@ -13,8 +14,8 @@ def step_impl(context):
     if context.table[0].get('id') is not None:
         ids = [todo['id'] for todo in todos]
         titles = [todo['title'] for todo in todos]
-        dones=[todo['doneStatus'] for todo in todos]
-        dess=[todo['description'] for todo in todos]
+        dones = [todo['doneStatus'] for todo in todos]
+        dess = [todo['description'] for todo in todos]
         assert context.table[0]['id'] in ids
         assert context.table[0]['title'] in titles
 
@@ -23,10 +24,13 @@ def step_impl(context):
     else:
         for row in context.table:
             if row['title'] not in [todo['title'] for todo in todos]:
-                data = {'title': row['title'], 'doneStatus': json.loads(row['doneStatus']), 'description': row['description']}
-                res = requests.post(url+'todos', data=json.dumps(data))
+                data = {'title': row['title'], 'doneStatus': json.loads(row['doneStatus']),
+                        'description': row['description']}
+                res = requests.post(url + 'todos', data=json.dumps(data))
 
-@when('the user makes a request to create a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+
+@when(
+    'the user makes a request to create a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
     newTodo = {}
     if title != "null": newTodo['title'] = title
@@ -35,14 +39,13 @@ def step_impl(context, title, doneStatus, description):
     if description != "null":
         newTodo['description'] = description
     context.newTodo = newTodo
-    response = requests.post(url+'todos', data=json.dumps(context.newTodo))
+    response = requests.post(url, data=json.dumps(context.newTodo))
     context.response = response
 
 
 @then('the “rest api todo list manager” adds the todo instance to the database')
 def step_impl(context):
     context.newTodo['id'] = context.response.json().get("id")
-    print(context.response.json())
     assert context.response.status_code == 201
     assert context.response.json().get("id") is not None
     assert context.response.json().get("title") == context.newTodo['title']
@@ -52,55 +55,53 @@ def step_impl(context):
         assert context.response.json().get("description") == context.newTodo['description']
 
 
-@then('the “rest api todo list manager” returns an error message "{error}"')
-def step_impl(context, error):
-    error = context.response.json().get("errorMessages")
-    assert len(error) == 1
-    assert message in error[0]
-
-
-@when('the user makes a request to delete a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+@when(
+    'the user makes a request to delete a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
-   response = requests.get(url+f'todos?title={title}&doneStatus={doneStatus}&description={description}')
-   todo = response.json().get("todos")
-   if len(todo) == 0:
-       context.todo_id = -1
-   else:
-       context.todo_id = todo[0]['id']
-   response = requests.delete(url+f'todos/{context.todo_id}')
-   context.response = response
+    response = requests.get(url + f'todos?title={title}&doneStatus={doneStatus}&description={description}')
+    todo = response.json().get("todos")
+    if len(todo) == 0:
+        context.todo_id = -1
+    else:
+        context.todo_id = todo[0]['id']
+        response = requests.delete(url + f'todos/{context.todo_id}')
+        context.response = response
 
 
 @then('the “rest api todo list manager” deletes the todo instance from the database')
 def step_impl(context):
-    response = requests.get(url+f'todos/{context.todo_id}')
+    response = requests.get(url + f'todos/{context.todo_id}')
     laa = context.todo_id
     context.todo_id = laa
     assert response.status_code == 404
     assert response.json().get("errorMessages") is not None
+    print(context.response.json())
     assert context.response.status_code == 200
 
 
-@when('the user makes a request to delete a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+@when(
+    'When the user makes a request to delete a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
-    response = requests.get(url+f'todos/{id}')
+    response = requests.get(url + f'todos/{id}')
     context.response = response
 
-@when('the user makes a request to get a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+
+@when(
+    'the user makes a request to get a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
-   response = requests.get(url+f'todos?title={title}&doneStatus={doneStatus}&description={description}')
-   todo = response.json().get("todos")
-   if len(todo) == 0:
-       context.todo_id = -1
-   else:
-       context.todo_id = todo[0]['id']
-   response = requests.get(url+f'todos/{context.todo_id}')
-   context.response = response
+    response = requests.get(url + f'todos?title={title}&doneStatus={doneStatus}&description={description}')
+    todo = response.json().get("todos")
+    if len(todo) == 0:
+        context.todo_id = -1
+    else:
+        context.todo_id = todo[0]['id']
+    response = requests.get(url + f'todos/{context.todo_id}')
+    context.response = response
 
 
 @then('the “rest api todo list manager” returns a todo instance from the database')
 def step_impl(context):
-    response = requests.get(url+f'todos/{context.todo_id}')
+    response = requests.get(url + f'todos/{context.todo_id}')
     laa = context.todo_id
     context.todo_id = laa
     assert response.status_code == 200
@@ -108,7 +109,8 @@ def step_impl(context):
     assert response.json().get("errorMessages") is not None
 
 
-@when('the user makes a request to update a todo instance titled "{title}" with fields title "{newTitle}", doneStatus "{newDoneStatus}", and description "{newDescription}"')
+@when(
+    'the user makes a request to update a todo instance titled "{title}" with fields title "{newTitle}", doneStatus "{newDoneStatus}", and description "{newDescription}"')
 def step_impl(context, title, newTitle, newDoneStatus, newDescription):
    newTodo = {}
    if newTitle != "null":
@@ -138,9 +140,11 @@ def step_impl(context):
         assert context.response.json().get("description") == context.newDescription
 
 
+@when(
+    'When the user makes a request to update a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 @when('the user makes a request to update a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
-    response = requests.get(url+f'todos/{id}')
+    response = requests.get(url + f'todos/{id}')
     context.response = response
 
 
