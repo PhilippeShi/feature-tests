@@ -7,9 +7,9 @@ Feature: Create a new todo instance
   Background:
     Given the following todo instances exist in the database
 
-      | id | title          | doneStatus | description |
-      | 1  | scan paperwork | false      | 1           |
-      | 2  | file paperwork | false      | 2           |
+      | title          | doneStatus | description |
+      | scan paperwork | false      | 1           |
+      | file paperwork | false      | 2           |
 
   Scenario Outline: Create a new todo instance successfully (Normal Flow)
     When the user makes a request to create a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"

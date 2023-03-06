@@ -6,10 +6,10 @@ So that the “rest api todo list manager” can delete the todo instance from t
 
 Background:
     Given the following todo instances exist in the database
-        | id | title          | doneStatus | description |
-        | 1  | scan paperwork | false      | q           |
-        | 2  | file paperwork | false      | q           |
-        | 3  | file paperwork | false      | q           |
+        | title          | doneStatus | description |
+        | scan paperwork | false      | q           |
+        | file paperwork | false      | q           |
+        | file paperwork | false      | q           |
 
 
 Scenario Outline: Delete a todo instance successfully (Normal Flow)
@@ -19,22 +19,21 @@ Scenario Outline: Delete a todo instance successfully (Normal Flow)
     Examples:
         | title          | doneStatus | description |
         | file paperwork | false      | q           |
-        | file paperwork | false      | q           |
 
 Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
     When the user makes a request to delete a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-    Then the “rest api todo list manager” returns an error message "<error>"
+    Then an error "<error>" is returned
 
     Examples:
-    | id    | title    	        | doneStatus 	| description           |   error                                      |
-    | 5  	|                   |               |                       |   Could not find any instances with todos/5  |
+        | id | title | doneStatus | description | error                                    |
+        | 5  | ss    | a          | a           | Could not find an instance with todos/5 |
 
-Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
+    Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
     When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” deletes the todo instance from the database
 
     Examples:
-    | title    	        | doneStatus 	| description           |
-    | scan paperwork	| false         |                       |
-    | file paperwork 	| false         |                       |
+        | title          | doneStatus | description |
+        | scan paperwork | false      | q           |
+        | file paperwork | false      | q           |
 

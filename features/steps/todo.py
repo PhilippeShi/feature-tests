@@ -26,7 +26,7 @@ def step_impl(context):
             if row['title'] not in [todo['title'] for todo in todos]:
                 data = {'title': row['title'], 'doneStatus': json.loads(row['doneStatus']),
                         'description': row['description']}
-                res = requests.post(url + 'todos', data=json.dumps(data))
+                res = requests.post(url , data=json.dumps(data))
 
 
 @when(
@@ -58,31 +58,29 @@ def step_impl(context):
 @when(
     'the user makes a request to delete a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
-    response = requests.get(url + f'todos?title={title}&doneStatus={doneStatus}&description={description}')
+    response = requests.get(url ,data=json.dumps({'title':format(title),'doneStatus':doneStatus,'description':format(description)}))
+
     todo = response.json().get("todos")
     if len(todo) == 0:
         context.todo_id = -1
     else:
         context.todo_id = todo[0]['id']
-        response = requests.delete(url + f'todos/{context.todo_id}')
+        response = requests.delete(url + f'/{context.todo_id}')
         context.response = response
 
 
 @then('the “rest api todo list manager” deletes the todo instance from the database')
 def step_impl(context):
-    response = requests.get(url + f'todos/{context.todo_id}')
-    laa = context.todo_id
-    context.todo_id = laa
+    response = requests.get(url +'/'+ format(context.todo_id))
     assert response.status_code == 404
     assert response.json().get("errorMessages") is not None
-    print(context.response.json())
     assert context.response.status_code == 200
 
 
 @when(
-    'When the user makes a request to delete a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+    'the user makes a request to delete a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
-    response = requests.get(url + f'todos/{id}')
+    response = requests.get(url + f'/{id}')
     context.response = response
 
 
