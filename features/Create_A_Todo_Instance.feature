@@ -5,10 +5,10 @@ I want to create a new todo instance
 So that the “rest api todo list manager” can add the new todo instance to the already existing list of todo instances
 
 Background:
-    Given the following todo instances exist in the database:
-        | id    | title    	        | doneStatus 	| description    |
-        | 1     | scan paperwork	| false         |                |
-        | 2  	| file paperwork 	| false         |                |
+    Given the following todo instances exist in the database
+        | id | title          | doneStatus | description |
+        | 1  | scan paperwork | false      | 1           |
+        | 2  | file paperwork | false      | 2           |
 
 Scenario Outline: Create a new todo instance successfully (Normal Flow)
     When the user makes a request to create a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
@@ -20,8 +20,8 @@ Scenario Outline: Create a new todo instance successfully (Normal Flow)
 
 
 Scenario Outline: Create a new todo instance unsuccessfully (Error Flow)
-    When the user makes a request to create a todo instance with fields doneStatus "<doneStatus>", description "<description>" and nonexistent field title "<title>"
-    Then the “rest api todo list manager” returns an error message "<error>"
+    When the user makes a request to create a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
+    Then an error "<error>" is returned
 
     Examples:
     | title    	        | doneStatus 	| description           |   error                         |
@@ -32,5 +32,5 @@ Scenario Outline: Create a duplicate todo instance (Alternate Flow)
     Then the “rest api todo list manager” adds the todo instance to the database
 
     Examples:
-    | title    	        | doneStatus 	| description           |
-    | file paperwork 	| false         |                       |
+        | title          | doneStatus | description |
+        | file paperwork | false      | 1           |

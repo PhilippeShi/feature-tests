@@ -12,8 +12,7 @@ Background:
         | 3  	| file paperwork 	| false         |                |
 
 Scenario Outline: Get a todo instance successfully (Normal Flow)
-    When the user makes a request to get a todo instance with fields title "<title>",
-    doneStatus "<doneStatus>", and description "<description>"
+    When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” returns a todo instance from the database
 
     Examples:
@@ -21,8 +20,7 @@ Scenario Outline: Get a todo instance successfully (Normal Flow)
     | scan paperwork	| false         |                |
 
 Scenario Outline: Get a todo instance unsuccessfully (Error Flow)
-    When the user makes a request to get a todo instance with fields title "<title>",
-    doneStatus "<doneStatus>", and description "<description>"
+    When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” returns an error message "<error>"
 
     Examples:
@@ -30,8 +28,7 @@ Scenario Outline: Get a todo instance unsuccessfully (Error Flow)
     | 6  	|                	|               |                       |   Could not find an instance with todos/6   |
 
 Scenario Outline: Get a duplicate todo instance (Alternate Flow)
-    When the user makes a request to get a todo instance with fields title "<title>",
-    doneStatus "<doneStatus>", and description "<description>"
+    When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” returns a todo instance from the database
 
     Examples:

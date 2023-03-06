@@ -13,8 +13,7 @@ Background:
 
 
 Scenario Outline: Delete a todo instance successfully (Normal Flow)
-    When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>",
-    and description "<description>"
+    When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” deletes the todo instance from the database
 
     Examples:
@@ -23,8 +22,7 @@ Scenario Outline: Delete a todo instance successfully (Normal Flow)
     | file paperwork 	| false         |                       |
 
 Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
-    When the user makes a request to delete a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>",
-    and description "<description>"
+    When the user makes a request to delete a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” returns an error message "<error>"
 
     Examples:
@@ -32,8 +30,7 @@ Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
     | 5  	|                   |               |                       |   Could not find any instances with todos/5  |
 
 Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
-    When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>",
-    and description "<description>"
+    When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” deletes the todo instance from the database
 
     Examples:
