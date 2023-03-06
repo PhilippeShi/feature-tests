@@ -36,7 +36,7 @@ def step_impl(context, title, doneStatus, description):
     if description != "null":
         newTodo['description'] = description
     context.newTodo = newTodo
-    response = requests.post(url+'todos', data=json.dumps(context.todos))
+    response = requests.post(url+'todos', data=json.dumps(context.newTodo))
     context.response = response
 
 
@@ -64,7 +64,26 @@ def step_impl(context, error):
     assert message in error[0]
 
 
+@when('the user makes a request to delete a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+def step_impl(context, title, doneStatus, description):
+   response = requests.get(url+f'todos?title={title}&doneStatus={doneStatus}&description={description}')
+   todo = response.json().get("todos")
+   if len(todo) == 0:
+       context.todo_id = -1
+   else:
+       context.todo_id = todo[0]['id']
+   response = requests.delete(url+f'todos/{context.todo_id}')
+   context.response = response
 
+
+@then('the “rest api todo list manager” deletes the todo instance from the database')
+def step_impl(context):
+    response = requests.get(url+f'todos/{context.todo_id}')
+    laa = context.todo_id
+    context.todo_id = laa
+    assert response.status_code == 404
+    assert response.json().get("errorMessages") is not None
+    assert context.response.status_code == 200
 
 
 
