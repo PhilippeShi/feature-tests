@@ -1,6 +1,6 @@
 Feature: Get category
     As a user
-    I want to get one category
+    I want to get a category
     So that I can see the information about the category
 
     Background:
@@ -10,7 +10,7 @@ Feature: Get category
         | 1  | Home   |             |
         | 2  | Office |             |
 
-    Scenario Outline: Get one category (Normal flow)
+    Scenario Outline: Get category (Normal flow)
         Given a category with "<id>" exists
         When I get the category by id
         Then the response returns the category object
@@ -20,7 +20,7 @@ Feature: Get category
         | 1  | 200  |
         | 2  | 200  |
 
-    Scenario Outline: Get one category by title (Alternate flow)
+    Scenario Outline: Get category by title (Alternate flow)
         Given a category with "<title>" exists
         When I get the category by title
         Then the response returns the category object
@@ -30,7 +30,7 @@ Feature: Get category
         | Home  | 200  |
         | Office| 200  |
 
-    Scenario Outline: Get one category that does not exist (Error flow)
+    Scenario Outline: Get category that does not exist (Error flow)
         Given a category with "<id>" does not exist
         When I get the category by id
         Then the response returns status "<code>"

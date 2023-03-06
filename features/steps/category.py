@@ -183,17 +183,43 @@ def step_impl(context, new_title):
 
 @then('the category is updated')
 def step_impl(context):
+    print(context.response.json())
+    print(context.response.status_code)
     assert context.response.status_code == 200
     assert context.response.json().get("id") is not None
-    assert context.response.json().get("title") == context.new_title
+    if "new_title" in context:
+        assert context.response.json().get("title") == context.new_title
     if "new_description" in context:
         assert context.response.json().get("description") == context.new_description
 
 @when('I update the category with both "{new_title}" and "{new_description}"')
 def step_impl(context, new_title, new_description):
-    data = {'title': new_title, 'description': new_description}
+    data = {}
+    if new_title != "null": data['title'] = new_title
+    if new_description != "null": data['description'] = new_description
     context.new_title = new_title
     context.new_description = new_description
     response = requests.put(url+f'categories/{context.category_id}', data=json.dumps(data))
     context.response = response
 
+@given('a category with description "{old_description}" exists')
+def step_impl(context, old_description):
+    print("HELLOOOO")
+    context.old_description = old_description
+    response = requests.get(url+f'categories?description={old_description}')
+    context.category_id = response.json()['categories'][0]['id']
+    print("category id: " + str(context.category_id))
+
+@when('I update the category description with "{new_description}"')
+def step_impl(context, new_description):
+    data = {'description': new_description}
+    context.new_description = new_description
+    response = requests.post(url+f'categories/{context.category_id}', data=json.dumps(data))
+    context.response = response
+
+@then('the category is not updated')
+def step_impl(context):
+    category = requests.get(url+f'categories/{context.category_id}').json()
+    
+    assert category.get("categories")[0]['description'] == context.old_description
+    print(context.response.json())
