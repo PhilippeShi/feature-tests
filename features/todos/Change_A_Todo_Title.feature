@@ -5,13 +5,13 @@ Feature: Change a todo title
   So that I can view todos with new titles
 
   Background:
-    Given the following todos exist
+    Given the following todo instances exist in the database
       | title          | doneStatus | description |
       | scan paperwork | false      |             |
       | file paperwork | false      |             |
 
   Scenario Outline: Change todo title only (Normal flow)
-    Given a todo with "<old_title>" exists
+    Given a todo with title "<old_title>" exists
     When I update the todo with "<new_title>"
     Then the todo is updated
     And the response returns status "<code>"

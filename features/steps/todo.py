@@ -199,3 +199,37 @@ def step_impl(context, new_description):
     response = requests.put(url + '/' + format(context.todo_id), data=json.dumps({'description': new_description}))
     context.response = response
 
+
+@given('a todo with title "{old_title}" exists')
+def step_impl(context, old_title):
+    response = requests.get(url, data=json.dumps({'title': format(old_title)}))
+    if (response.status_code == 404):
+        response = requests.post(url,
+                                 data=json.dumps({'title': format(old_title)}))
+    context.todo_id = response.json().get('todos')[0].get('id')
+    assert response.status_code == 200
+
+
+@when('I update the todo with "{new_title}"')
+def step_impl(context, new_title):
+    context.new_title = new_title
+    response = requests.put(url + '/' + format(context.todo_id),
+                            data=json.dumps({'title': new_title}))
+    context.response = response
+
+
+@then("the todo is updated")
+def step_impl(context):
+    assert context.response.status_code == 200
+    assert context.response.json().get("id") is not None
+    if "new_title" in context:
+        assert context.response.json().get("title") == context.new_title
+    if "new_description" in context:
+        assert context.response.json().get("description") == context.new_description
+
+
+@given('a todo with "{id}" not exist')
+def step_impl(context, id):
+    response = requests.get(url + f'/{id}')
+    assert response.status_code == 404
+    context.todo_id=id
