@@ -13,16 +13,18 @@ def step_impl(context):
     if context.table[0].get('id') is not None:
         ids = [todo['id'] for todo in todos]
         titles = [todo['title'] for todo in todos]
+
         doneStatus = [todo['doneStatus'] for todo in todos]
         description = [todo['description'] for todo in todos]
         assert context.table[0]['id'] in ids
         #assert context.table[0]['title'] in titles
         assert context.table[0]['doneStatus'] in doneStatus
         #assert context.table[0]['description'] in description
+
     else:
         for row in context.table:
             if row['title'] not in [todo['title'] for todo in todos]:
-                data = {'title': row['title'], 'doneStatus': row['doneStatus'], 'description': row['description']}
+                data = {'title': row['title'], 'doneStatus': json.loads(row['doneStatus']), 'description': row['description']}
                 res = requests.post(url+'todos', data=json.dumps(data))
 
 @when('the user makes a request to create a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
@@ -30,7 +32,7 @@ def step_impl(context, title, doneStatus, description):
     newTodo = {}
     if title != "null": newTodo['title'] = title
     if doneStatus != "null":
-        newTodo['doneStatus'] = doneStatus
+        newTodo['doneStatus'] = json.loads(doneStatus)
     if description != "null":
         newTodo['description'] = description
     context.newTodo = newTodo
@@ -41,11 +43,12 @@ def step_impl(context, title, doneStatus, description):
 @then('the “rest api todo list manager” adds the todo instance to the database')
 def step_impl(context):
     context.newTodo['id'] = context.response.json().get("id")
+    print(context.response.json())
     assert context.response.status_code == 201
     assert context.response.json().get("id") is not None
     assert context.response.json().get("title") == context.newTodo['title']
     if 'doneStatus' in context.newTodo:
-        assert context.response.json().get("doneStatus") == context.newTodo['doneStatus']
+        assert json.loads(context.response.json().get("doneStatus")) == context.newTodo['doneStatus']
     if 'description' in context.newTodo:
         assert context.response.json().get("description") == context.newTodo['description']
 
