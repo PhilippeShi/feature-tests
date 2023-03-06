@@ -6,10 +6,10 @@ So that the “rest api todo list manager” can display a todo instance from th
 
 Background:
     Given the following todo instances exist in the database
-        | id    | title    	        | doneStatus 	| description    |
-        | 1     | scan paperwork	| false         | null           |
-        | 2  	| file paperwork 	| false         | null           |
-        | 3  	| file paperwork 	| false         | null           |
+        | title          | doneStatus | description |
+        | scan paperwork | false      | null        |
+        | file paperwork | false      | null        |
+        | file paperwork | false      | null        |
 
 Scenario Outline: Get a todo instance successfully (Normal Flow)
     When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
@@ -21,13 +21,14 @@ Scenario Outline: Get a todo instance successfully (Normal Flow)
 
 Scenario Outline: Get a todo instance unsuccessfully (Error Flow)
     When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-    Then the “rest api todo list manager” returns an error message "<error>"
+    Then the response returns status "<code>"
+    And the length of returned list should be "<length>"
 
     Examples:
-    | id    | title    	        | doneStatus 	| description           |   error                                     |
-    | 6  	| null              | null          | null                  |   Could not find an instance with todos/6   |
+        | id | title | doneStatus | description | code | length |
+        | 6  | null  | null       | null        | 200  |0       |
 
-Scenario Outline: Get a duplicate todo instance (Alternate Flow)
+    Scenario Outline: Get a duplicate todo instance (Alternate Flow)
     When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” returns a todo instance from the database
 

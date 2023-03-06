@@ -26,7 +26,7 @@ def step_impl(context):
             if row['title'] not in [todo['title'] for todo in todos]:
                 data = {'title': row['title'], 'doneStatus': json.loads(row['doneStatus']),
                         'description': row['description']}
-                res = requests.post(url , data=json.dumps(data))
+                res = requests.post(url, data=json.dumps(data))
 
 
 @when(
@@ -58,7 +58,8 @@ def step_impl(context):
 @when(
     'the user makes a request to delete a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
-    response = requests.get(url ,data=json.dumps({'title':format(title),'doneStatus':doneStatus,'description':format(description)}))
+    response = requests.get(url, data=json.dumps(
+        {'title': format(title), 'doneStatus': doneStatus, 'description': format(description)}))
 
     todo = response.json().get("todos")
     if len(todo) == 0:
@@ -71,7 +72,7 @@ def step_impl(context, title, doneStatus, description):
 
 @then('the “rest api todo list manager” deletes the todo instance from the database')
 def step_impl(context):
-    response = requests.get(url +'/'+ format(context.todo_id))
+    response = requests.get(url + '/' + format(context.todo_id))
     assert response.status_code == 404
     assert response.json().get("errorMessages") is not None
     assert context.response.status_code == 200
@@ -87,41 +88,41 @@ def step_impl(context, id, title, doneStatus, description):
 @when(
     'the user makes a request to get a todo instance with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, title, doneStatus, description):
-    response = requests.get(url + f'todos?title={title}&doneStatus={doneStatus}&description={description}')
+    response = requests.get(url + f'?title={title}&doneStatus={doneStatus}&description={description}')
     todo = response.json().get("todos")
     if len(todo) == 0:
         context.todo_id = -1
     else:
         context.todo_id = todo[0]['id']
-    response = requests.get(url + f'todos/{context.todo_id}')
+        response = requests.get(url + f'/{context.todo_id}')
     context.response = response
 
 
 @then('the “rest api todo list manager” returns a todo instance from the database')
 def step_impl(context):
-    response = requests.get(url + f'todos/{context.todo_id}')
+    response = requests.get(url + f'/{context.todo_id}')
     laa = context.todo_id
     context.todo_id = laa
     assert response.status_code == 200
     assert context.response.status_code == 200
-    assert response.json().get("errorMessages") is not None
+    assert response.json().get("errorMessages") is None
 
 
 @when(
     'the user makes a request to update a todo instance titled "{title}" with fields title "{newTitle}", doneStatus "{newDoneStatus}", and description "{newDescription}"')
 def step_impl(context, title, newTitle, newDoneStatus, newDescription):
-   newTodo = {}
-   if newTitle != "null":
-       newTodo['title'] = newTitle
-   if newDoneStatus != "null":
-       newTodo['doneStatus'] = json.loads(newDoneStatus)
-   if newDescription != "null":
-       newTodo['description'] = newDescription
-   context.newTodo = newTodo
-   todo_id = requests.get(url+f'?title={title}').json()['todos'][0]['id']
-   response = requests.post(url+f'/{todo_id}', data=json.dumps(newTodo))
-   context.response = response
-   context.todo_id = todo_id
+    newTodo = {}
+    if newTitle != "null":
+        newTodo['title'] = newTitle
+    if newDoneStatus != "null":
+        newTodo['doneStatus'] = json.loads(newDoneStatus)
+    if newDescription != "null":
+        newTodo['description'] = newDescription
+    context.newTodo = newTodo
+    todo_id = requests.get(url + f'?title={title}').json()['todos'][0]['id']
+    response = requests.post(url + f'/{todo_id}', data=json.dumps(newTodo))
+    context.response = response
+    context.todo_id = todo_id
 
 
 @then('the “rest api todo list manager” updates the todo instance from the database')
@@ -140,7 +141,8 @@ def step_impl(context):
 
 @when(
     'When the user makes a request to update a todo instance identified by id "<id>" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
-@when('the user makes a request to update a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
+@when(
+    'the user makes a request to update a todo instance identified by id "{id}" with fields title "{title}", doneStatus "{doneStatus}", and description "{description}"')
 def step_impl(context, id, title, doneStatus, description):
     response = requests.get(url + f'/{id}')
     context.response = response
@@ -148,17 +150,19 @@ def step_impl(context, id, title, doneStatus, description):
 
 @given('a todo with "{old_title}" and "{old_description}" exist')
 def step_impl(context, old_title, old_description):
-    response = requests.get(url, data=json.dumps({'title': format(old_title), 'description':format(old_description)}))
+    response = requests.get(url, data=json.dumps({'title': format(old_title), 'description': format(old_description)}))
     if (response.status_code == 404):
-        response = requests.post(url, data=json.dumps({'title': format(old_title),'description':format(old_description)}))
+        response = requests.post(url,
+                                 data=json.dumps({'title': format(old_title), 'description': format(old_description)}))
     context.todo_id = response.json().get('todos')[0].get('id')
     assert response.status_code == 200
 
 
 @when('I update the todo with "{new_title}" and "{new_description}" together')
 def step_impl(context, new_title, new_description):
-    context.new_title, context.new_description= new_title, new_description
-    response = requests.put(url + '/' + format(context.todo_id), data=json.dumps({'title': new_title, 'description':new_description}))
+    context.new_title, context.new_description = new_title, new_description
+    response = requests.put(url + '/' + format(context.todo_id),
+                            data=json.dumps({'title': new_title, 'description': new_description}))
     context.response = response
 
 
@@ -174,12 +178,13 @@ def step_impl(context):
 
 @when('I get the todo by "{title}" and "{description}"')
 def step_impl(context, title, description):
-    response = requests.get(url, data=json.dumps({'title': format(title), 'description':format(description)}))
+    response = requests.get(url, data=json.dumps({'title': format(title), 'description': format(description)}))
     context.status_code = response.status_code
     context.todo = response.json().get('todos')[0]
     print(context.todo)
     context.response = response
-    context.title=title
+    context.title = title
+
 
 @given('a todo with description "{old_description}" exists')
 def step_impl(context, old_description):
@@ -232,4 +237,10 @@ def step_impl(context):
 def step_impl(context, id):
     response = requests.get(url + f'/{id}')
     assert response.status_code == 404
-    context.todo_id=id
+    context.todo_id = id
+
+
+@step('the length of returned list should be "{length}"')
+def step_impl(context, length):
+    listLen = len(context.response.json().get('todos'))
+    assert listLen==int(length)
