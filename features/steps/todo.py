@@ -144,5 +144,56 @@ def step_impl(context, id, title, doneStatus, description):
     context.response = response
 
 
+@given('a todo with "{old_title}" and "{old_description}" exist')
+def step_impl(context, old_title, old_description):
+    response = requests.get(url, data=json.dumps({'title': format(old_title), 'description':format(old_description)}))
+    if (response.status_code == 404):
+        response = requests.post(url, data=json.dumps({'title': format(old_title),'description':format(old_description)}))
+    context.todo_id = response.json().get('todos')[0].get('id')
+    assert response.status_code == 200
 
+
+@when('I update the todo with "{new_title}" and "{new_description}" together')
+def step_impl(context, new_title, new_description):
+    context.new_title, context.new_description= new_title, new_description
+    response = requests.put(url + '/' + format(context.todo_id), data=json.dumps({'title': new_title, 'description':new_description}))
+    context.response = response
+
+
+@then("the todo is not updated")
+def step_impl(context):
+    assert context.response.status_code == 404
+
+    if "new_title" in context:
+        assert context.response.json().get("title") == context.new_title
+    if "new_description" in context:
+        assert context.response.json().get("description") == context.new_description
+
+
+@when('I get the todo by "{title}" and "{description}"')
+def step_impl(context, title, description):
+    response = requests.get(url, data=json.dumps({'title': format(title), 'description':format(description)}))
+    context.status_code = response.status_code
+    context.todo = response.json().get('todos')[0]
+    print(context.todo)
+    context.response = response
+    context.title=title
+
+@given('a todo with description "{old_description}" exists')
+def step_impl(context, old_description):
+    response = requests.get(url, data=json.dumps({'description': format(old_description)}))
+
+    if (response.status_code == 404):
+        response = requests.post(url, data=json.dumps({'description': format(old_description)}))
+    context.todo_id = response.json().get('todos')[0].get('id')
+    context.todo = response.json().get('todos')[0]
+    context.description = response.json().get('todos')[0].get('description')
+    assert response.status_code == 200
+
+
+@when('I update the todo with description "{new_description}"')
+def step_impl(context, new_description):
+    context.new_description = new_description
+    response = requests.put(url + '/' + format(context.todo_id), data=json.dumps({'description': new_description}))
+    context.response = response
 
