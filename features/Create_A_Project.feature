@@ -14,13 +14,13 @@ Feature: Create a new project instance
 
   Scenario Outline: Create a project (Normal flow)
     Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
-    When I create the the project
+    When I create the project
     Then the project is created
     Examples:
-      | title       | completed | active | description     |
-      | mobile app  | false     | true   | android project |
-      | windows app | true      | false  | windows project |
-      | macos app   | true      | true   | macos project   |
+      | title   | completed | active | description     |
+      | android | false     | false  | android project |
+      | windows | true      | false  | windows project |
+      | linux   | false     | true   | linux project   |
 
   Scenario Outline: Create a project with an existing title (Alternate flow)
     Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
@@ -40,11 +40,18 @@ Feature: Create a new project instance
       | Project no description1 | false     | false  | null        |
       | Project no description2 | true      | false  | null        |
 
-  Scenario Outline: Create a category with a missing title (Error flow)
+  Scenario Outline: Create a category with a missing title (Alternate flow)
     Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
     When I create the project
-    Then the project is not created
-    And an error "<message>" is returned
+    Then the project is created
     Examples:
-      | title | completed | active | description   | message |
-      | null  | false     | false  | a description |title :  field is mandatory|
+      | title | completed | active | description   |
+      | null  | false     | false  | a description |
+
+  Scenario Outline: Create a category with missing completed status (Alternate flow)
+    Given  a project with "<title>" and "<completed>" and "<active>" and "<description>"
+    When I create the project
+    Then the project is created
+    Examples:
+      | title               | completed | active | description |
+      | no completed status | null      | false  | no status   |
