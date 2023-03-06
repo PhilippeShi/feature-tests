@@ -8,8 +8,8 @@ Feature: Create a new project instance
   Background:
     Given the application is running
     And the following project exist
-      | id | title       | completed | active | description |
-      | 1  | Office Work | false     | false  |             |
+      | title       | completed | active | description |
+      | Office Work | false     | false  |             |
 
 
   Scenario Outline: Create a project (Normal flow)
@@ -56,7 +56,7 @@ Feature: Create a new project instance
       | title               | completed | active | description |
       | no completed status | null      | false  | no status   |
 
-  Scenario Outline: Create a project with wrong type value in field active
+  Scenario Outline: Create a project with wrong type value in field active (Error flow)
     Given a project with "<title>" and "<completed>" and "<active>" and "<description>"
     When I create the project
     Then the project is not created
