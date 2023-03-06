@@ -1,7 +1,6 @@
 from behave import *
 import requests
 import json
-import subprocess
 
 url = 'http://localhost:4567/'
 

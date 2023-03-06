@@ -10,7 +10,7 @@ python -m venv venv
 venv\Scripts\activate
 
 # Install dependencies
-pip install behave
+pip install -r requirements.txt
 ```
 
 
