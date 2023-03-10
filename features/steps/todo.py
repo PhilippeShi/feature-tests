@@ -41,6 +41,7 @@ def step_impl(context, title, doneStatus, description):
     context.newTodo = newTodo
     response = requests.post(url, data=json.dumps(context.newTodo))
     context.response = response
+    context.todo_id = response.json().get("id")
 
 
 @then('the “rest api todo list manager” adds the todo instance to the database')
@@ -83,6 +84,7 @@ def step_impl(context):
 def step_impl(context, id, title, doneStatus, description):
     response = requests.get(url + f'/{id}')
     context.response = response
+    context.todo_id = id
 
 
 @when(
@@ -106,6 +108,7 @@ def step_impl(context):
     assert response.status_code == 200
     assert context.response.status_code == 200
     assert response.json().get("errorMessages") is None
+    assert response.json().get("todos")[0].get("id") == context.todo_id
 
 
 @when(
@@ -130,7 +133,7 @@ def step_impl(context):
     print(context.response.json())
     print(context.response.status_code)
     assert context.response.status_code == 200
-    assert context.response.json().get("id") is not None
+    assert context.response.json().get("id") == context.todo_id
     if "newTitle" in context:
         assert context.response.json().get("title") == context.newTitle
     if "newDoneStatus" in context:
@@ -171,9 +174,9 @@ def step_impl(context):
     assert context.response.status_code == 404
 
     if "new_title" in context:
-        assert context.response.json().get("title") == context.new_title
+        assert context.response.json().get("title") != context.new_title
     if "new_description" in context:
-        assert context.response.json().get("description") == context.new_description
+        assert context.response.json().get("description") != context.new_description
 
 
 @when('I get the todo by "{title}" and "{description}"')
@@ -244,3 +247,17 @@ def step_impl(context, id):
 def step_impl(context, length):
     listLen = len(context.response.json().get('todos'))
     assert listLen==int(length)
+
+@then('the todo instance is not deleted')
+def step_impl(context):
+    todo = requests.get(url + f'/{context.todo_id}')
+    print(todo)
+    assert todo.status_code == 200
+    assert todo.json().get("id") == context.todo_id
+
+@then('the todo instance is not created')
+@then('the todo instance is deleted')
+def step_impl(context):
+    todo = requests.get(url + f'/{context.todo_id}')
+    assert todo.status_code == 404
+    assert todo.json().get("errorMessages") is not None

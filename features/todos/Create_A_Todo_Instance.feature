@@ -22,8 +22,8 @@ Feature: Create a new todo instance
 
   Scenario Outline: Create a new todo instance unsuccessfully (Error Flow)
     When the user makes a request to create a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
-
     Then an error "<error>" is returned
+    And the todo instance is not created
 
 
     Examples:

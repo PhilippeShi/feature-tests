@@ -19,7 +19,7 @@ Scenario Outline: Get a todo instance successfully (Normal Flow)
     | title    	        | doneStatus 	| description    |
     | scan paperwork	| false         | null           |
 
-Scenario Outline: Get a todo instance unsuccessfully (Error Flow)
+Scenario Outline: Get a todo instance unsuccessfully with empty parameters (Error Flow)
     When the user makes a request to get a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the response returns status "<code>"
     And the length of returned list should be "<length>"

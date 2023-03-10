@@ -25,6 +25,7 @@ Scenario Outline: Update a todo instance successfully (Normal Flow)
 Scenario Outline: Update a todo instance unsuccessfully (Error Flow)
     When the user makes a request to update a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then an error "<error>" is returned
+    And the todo is not updated
 
     Examples:
     | id    | title    	        | doneStatus 	| description           |   error                                                  |

@@ -20,7 +20,7 @@ Scenario Outline: Delete a todo instance successfully (Normal Flow)
         | title          | doneStatus | description |
         | file paperwork | false      | q           |
 
-Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
+Scenario Outline: Delete an unexisting todo instance unsuccessfully (Error Flow)
     When the user makes a request to delete a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then an error "<error>" is returned
 
@@ -31,6 +31,7 @@ Scenario Outline: Delete a todo instance unsuccessfully (Error Flow)
     Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
     When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then the “rest api todo list manager” deletes the todo instance from the database
+    And the todo instance is deleted
 
     Examples:
         | title          | doneStatus | description |
