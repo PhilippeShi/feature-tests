@@ -7,9 +7,10 @@ So that the “rest api todo list manager” can delete the todo instance from t
 Background:
     Given the following todo instances exist in the database
         | title          | doneStatus | description |
-        | scan paperwork | false      | q           |
-        | file paperwork | false      | q           |
-        | file paperwork | false      | q           |
+        | write paperwork | false      | q           |
+        | write paperwork | false      | q           |
+        | write emails   | false      | q           |
+        | write emails   | false      | q           |
 
 
 Scenario Outline: Delete a todo instance successfully (Normal Flow)
@@ -18,15 +19,16 @@ Scenario Outline: Delete a todo instance successfully (Normal Flow)
 
     Examples:
         | title          | doneStatus | description |
-        | file paperwork | false      | q           |
+        | write paperwork| false      | q           |
+        | write emails   | false      | q           |
 
 Scenario Outline: Delete an unexisting todo instance unsuccessfully (Error Flow)
     When the user makes a request to delete a todo instance identified by id "<id>" with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
     Then an error "<error>" is returned
 
     Examples:
-        | id | title | doneStatus | description | error                                    |
-        | 5  | ss    | a          | a           | Could not find an instance with todos/5 |
+        | id  | title | doneStatus | description | error                                    |
+        | -1  | ss    | a          | a           | Could not find an instance with todos/-1 |
 
     Scenario Outline: Delete a duplicate todo instance (Alternate Flow)
     When the user makes a request to delete a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
@@ -35,6 +37,6 @@ Scenario Outline: Delete an unexisting todo instance unsuccessfully (Error Flow)
 
     Examples:
         | title          | doneStatus | description |
-        | scan paperwork | false      | q           |
-        | file paperwork | false      | q           |
+        | write emails   | false      | q           |
+        | write paperwork | false      | q           |
 

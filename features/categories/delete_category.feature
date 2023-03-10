@@ -41,3 +41,4 @@ Feature: Delete a category
         Examples:
         | title  | description | message |
         | Cool   | cool stuff  | Could not find any instances with categories/|
+        | Oops   | Oops stuff  | Could not find any instances with categories/|

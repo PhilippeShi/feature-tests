@@ -7,9 +7,9 @@ So that the “rest api todo list manager” can update the todo instance from t
 Background:
     Given the following todo instances exist in the database
         | title          | doneStatus | description |
-        | scan paperwork | false      | null        |
-        | file paperwork | false      | null        |
-        | file paperwork | false      | null        |
+        | email paperwork | false      | null        |
+        | write paperwork | false      | null        |
+        | write paperwork | false      | null        |
 
 
 Scenario Outline: Update a todo instance successfully (Normal Flow)
@@ -19,7 +19,8 @@ Scenario Outline: Update a todo instance successfully (Normal Flow)
 
     Examples:
     | title    	        | newTitle        | doneStatus 	|   newDoneStatus  |  description  |   newDescription     |
-    | scan paperwork	| sign paperwork  | false       |   true           |  null         |   not signed yet     |
+    | email paperwork	| sign paperwork  | false       |   true           |  null         |   not signed yet     |
+    | write paperwork   | send paperwork  | false       |   true           |  finished     |   sent to government |
 
 
 Scenario Outline: Update a todo instance unsuccessfully (Error Flow)
@@ -28,8 +29,9 @@ Scenario Outline: Update a todo instance unsuccessfully (Error Flow)
     And the todo is not updated
 
     Examples:
-    | id    | title    	        | doneStatus 	| description           |   error                                                  |
-    | 8  	| send paperwork    | false         | send to government    |   Could not find an instance with todos/8   |
+    | id    | title    	        | doneStatus 	| description           |   error                                     |
+    | 8  	| email paperwork   | false         | send to government    |   Could not find an instance with todos/8   |
+    | -1  	| email paperwork   | false         | send to government    |   Could not find an instance with todos/-1   |
 
 Scenario Outline: Update a duplicate todo instance (Alternate Flow)
     When the user makes a request to update a todo instance titled "<title>" with fields title "<newTitle>", doneStatus "<newDoneStatus>", and description "<newDescription>"
@@ -37,6 +39,6 @@ Scenario Outline: Update a duplicate todo instance (Alternate Flow)
 
     Examples:
     | title    	        | newTitle        | doneStatus 	|   newDoneStatus  |  description  |   newDescription     |
-    | file paperwork	| do paperwork    | false       |   false          |  null         |   not done yet       |
+    | write paperwork	| do paperwork    | false       |   false          |  null         |   not done yet       |
 
 

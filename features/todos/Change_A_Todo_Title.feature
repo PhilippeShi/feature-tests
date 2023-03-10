@@ -6,9 +6,9 @@ Feature: Change a todo title
 
   Background:
     Given the following todo instances exist in the database
-      | title          | doneStatus | description |
-      | scan paperwork | false      |             |
-      | file paperwork | false      |             |
+      | title           | doneStatus | description |
+      | email paperwork | false      |             |
+      | write paperwork | false      |             |
 
   Scenario Outline: Change todo title only (Normal flow)
     Given a todo with title "<old_title>" exists
@@ -16,9 +16,9 @@ Feature: Change a todo title
     Then the todo is updated
     And the response returns status "<code>"
     Examples:
-      | old_title   | new_title  | code |
-      | School      | SChool work| 200  |
-      | Game Work   | Keep going | 200  |
+      | old_title       | new_title  | code |
+      | email paperwork | SChool work| 200  |
+      | write paperwork | Keep going | 200  |
 
   Scenario Outline: Change todo title and description (Alternate flow)
     Given a todo with "<old_title>" and "<old_description>" exist
@@ -26,9 +26,9 @@ Feature: Change a todo title
     Then the todo is updated
     And the response returns status "<code>"
     Examples:
-      | old_title  | old_description | new_title  | new_description | code |
-      | old title  | old description | new title  | new description | 200  |
-      | old title2 | old desc        | new title2 | new desc        | 200  |
+      | old_title       | old_description | new_title  | new_description | code |
+      | email paperwork | null            | new title  | new description | 200  |
+      | write paperwork | null            | new title2 | new desc        | 200  |
 
   Scenario Outline: Change todo title that not exist (Error flow)
     Given a todo with "<id>" not exist

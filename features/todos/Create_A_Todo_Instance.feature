@@ -9,7 +9,7 @@ Feature: Create a new todo instance
 
       | title          | doneStatus | description |
       | scan paperwork | false      | 1           |
-      | file paperwork | false      | 2           |
+      | write paperwork | false      | 2           |
 
   Scenario Outline: Create a new todo instance successfully (Normal Flow)
     When the user makes a request to create a todo instance with fields title "<title>", doneStatus "<doneStatus>", and description "<description>"
@@ -18,6 +18,7 @@ Feature: Create a new todo instance
     Examples:
       | title          | doneStatus | description        |
       | sign paperwork | true       | signature required |
+      | read emails    | true       | work related email |
 
 
   Scenario Outline: Create a new todo instance unsuccessfully (Error Flow)
@@ -36,5 +37,7 @@ Feature: Create a new todo instance
 
     Examples:
       | title          | doneStatus | description |
-      | file paperwork | false      | null        |
+      | write paperwork | false      | null        |
+      | write paperwork | false      | null        |
+      | write paperwork | false      | null        |
 
